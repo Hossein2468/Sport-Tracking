@@ -76,27 +76,23 @@ def gpx_elements():
     avarage_speed_chart = []
     for loop in trackpoints :
         if num == 1 : 
-            time1 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ') 
+            first_time = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ') 
         if num == len(trackpoints) : 
-            time2 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ') 
-            last_time = (time2 - time1).total_seconds()
+            end_time = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ') 
+            last_time = (end_time - first_time).total_seconds()
         if num % 2 != 0 :
             lat1 = float(loop[0])
             lon1 = float(loop[1])
+            time1 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ')
         if num % 2 == 0 : 
             lat2 = float(loop[0]) 
             lon2 = float(loop[1])
+            time2 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ')
+            l_time = (time2 - time1).total_seconds()
             last_position = distance(lat1 , lon1 , lat2 , lon2)
+            av_speed = (last_position * 1000) / l_time
+            avarage_speed_chart.append(av_speed)
             last_distance += last_position 
-        if num % 5 == 0 and num % 10 != 0 : 
-            time3 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ')
-            l_distance = last_position
-        if num % 10 == 0 : 
-            time4 = datetime.datetime.strptime(loop[2] , '%Y-%m-%dT%H:%M:%S.%fZ')
-            l_time = (time4 - time3).total_seconds()
-            l_distance = (last_distance - l_distance) * 1000 
-            a_speed = l_distance / l_time
-            avarage_speed_chart.append(l_time)
         num += 1 
     last_distance = last_distance * 1000
     avarage_speed = last_distance / last_time
